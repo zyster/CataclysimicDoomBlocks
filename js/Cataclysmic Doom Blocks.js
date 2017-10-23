@@ -52,15 +52,17 @@ function create() {
   moveKeys = game.input.keyboard.addKeys(
   {
     'up': Phaser.KeyCode.W,
+    'up2':Phaser.KeyCode.UPARROW
   })
 }
 
 function update() {
-  if (moveKeys.up.isDown) {
+  if (moveKeys.up.isDown || moveKeys.up2.isDown) {
     ajax.y -= 4;
 } else {
-  ajax.y += 3; 
+  ajax.y += 3;
 }
+
 
 }
 };
