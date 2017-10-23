@@ -18,6 +18,7 @@ var lives = 1;
 var livesText;
 
 function preload() {
+  game.load.image('background', 'assets/Background.png');
   game.load.image('ajax', 'assets/Ajax.png');
   game.load.image('block', 'assets/Block.png');
   game.load.image('bomb', 'assets/Bomb.png');
@@ -30,8 +31,12 @@ function preload() {
  }
 
 function create() {
+  //Adding Background
+  background = game.add.sprite(0,0,'background');
   //Creating the player
   ajax = game.add.sprite(64, 64, 'ajax');
+  game.physics.arcade.enable(ajax);
+  ajax.body.collideWorldBounds = true;
   //Text
   livesText = game.add.text(650,game.world.height-50,'Lives: ' + lives, {fill: 'red'});
   scoreText = game.add.text(650,game.world.height-75,'Score: ' + score, {fill: 'orange'});
@@ -42,9 +47,20 @@ function create() {
   //weapon.fireRate = 1500;
   //weapon.bulletRotateToVelocity = true;
   //weapon.trackSprite(Ajax);
+
+  //Creating controls
+  moveKeys = game.input.keyboard.addKeys(
+  {
+    'up': Phaser.KeyCode.W,
+  })
 }
 
 function update() {
+  if (moveKeys.up.isDown) {
+    ajax.y -= 4;
+} else {
+  ajax.y += 3; 
+}
 
 }
 };
