@@ -16,7 +16,9 @@ var score = 0;
 var scoreText;
 var lives = 1;
 var livesText;
-var playerbullet;
+var weapon;
+var Back1;
+var Back2;
 
 function preload() {
   game.load.image('background', 'assets/Background.png');
@@ -26,7 +28,7 @@ function preload() {
   game.load.image('bomb', 'assets/Bomb.png');
   game.load.image('DBlock', 'assets/DBlock.png');
   game.load.image('explosion', 'assets/Explosion.png');
-  game.load.image('playerbullet', 'assets/Laser.png');
+  game.load.image('laser', 'assets/Laser.png');
   game.load.image('medKit', 'assets/Med Kit.png');
   game.load.image('missile', 'assets/Missile.png');
   game.load.image('shield', 'assets/Shield.png');
@@ -34,7 +36,8 @@ function preload() {
 
 function create() {
   //Adding Background
-  background = game.add.sprite(0,0,'background');
+  Back1 = game.add.sprite(0,0,'background');
+  Back2 = game.add.sprite(game.world.width,0,'background');
 
   //Creating the player
   ajax = game.add.sprite(64, 64, 'ajax');
@@ -46,25 +49,46 @@ function create() {
   scoreText = game.add.text(650,game.world.height-75,'Score: ' + score, {fill: 'orange'});
 
   //Weapon Setup
-  playerbullet = game.add.group();
-  playerbullet.enableBody = true;
-  playerbullet.scale.setTo(1,1);
+  weapon = game.add.weapon(5,'laser');
+  weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+  weapon.bulletSpeed = 300;
+  weapon.fireRate = 100;
+  weapon.trackSprite(ajax);
+  weapon.trackOffset.x = 60;
+  weapon.trackOffset.y = 24;
+  weapon.fireAngle = Phaser.ANGLE_RIGHT;
 
   //Creating controls
   moveKeys = game.input.keyboard.addKeys(
   {
     'up': Phaser.KeyCode.W,
-    'up2':Phaser.KeyCode.UPARROW
+    'up2':Phaser.KeyCode.UPARROW,
+    'shoot':Phaser.KeyCode.SPACEBAR
   })
 }
 
 function update() {
+
+  Back1.x --;
+  Back2.x --;
+
+  if (Back1.x < -game.world.width) {
+    Back1.x = game.world.width;
+  }
+
+  if (Back2.x < -game.world.width) {
+    Back2.x = game.world.width;
+  }
+
   if (moveKeys.up.isDown || moveKeys.up2.isDown) {
     ajax.y -= 7;
 } else {
   ajax.y += 5;
 }
 
+  if (moveKeys.shoot.isDown) {
+    weapon.fire();
+  }
 
 }
 };
