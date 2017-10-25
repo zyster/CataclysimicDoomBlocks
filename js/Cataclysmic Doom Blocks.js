@@ -68,10 +68,11 @@ function create() {
 }
 
 function update() {
-
+// Moves the x value of Back1 and Back2 backwards every frame
   Back1.x --;
   Back2.x --;
 
+//Scrolling background
   if (Back1.x < -game.world.width) {
     Back1.x = game.world.width;
   }
@@ -80,12 +81,14 @@ function update() {
     Back2.x = game.world.width;
   }
 
+//Controls
   if (moveKeys.up.isDown || moveKeys.up2.isDown) {
     ajax.y -= 7;
 } else {
   ajax.y += 5;
 }
 
+//Shooting
   if (moveKeys.shoot.isDown) {
     weapon.fire();
   }
