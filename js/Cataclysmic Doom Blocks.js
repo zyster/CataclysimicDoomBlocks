@@ -19,12 +19,13 @@ var livesText;
 var weapon;
 var Back1;
 var Back2;
+var Blocks;
 
 function preload() {
   game.load.image('background', 'assets/Background.png');
   game.load.image('ajax', 'assets/Ajax.png');
   game.load.image('ajaxN', 'assets/AjaxN.png')
-  game.load.image('block', 'assets/Block.png');
+  game.load.image('Block', 'assets/Block.png');
   game.load.image('bomb', 'assets/Bomb.png');
   game.load.image('DBlock', 'assets/DBlock.png');
   game.load.image('explosion', 'assets/Explosion.png');
@@ -44,15 +45,25 @@ function create() {
   game.physics.arcade.enable(ajax);
   ajax.body.collideWorldBounds = true;
 
+  //Creating the blocks on the level
+  Blocks = game.add.group();
+  DBlock = game.add.group();
+
+  //Use a loop to create all of the blocks
+  for (var i=0; i < 8; i++) {
+    spawnBlock();
+  }
+
+
   //Text
   livesText = game.add.text(650,game.world.height-50,'Lives: ' + lives, {fill: 'red'});
   scoreText = game.add.text(650,game.world.height-75,'Score: ' + score, {fill: 'orange'});
 
   //Weapon Setup
-  weapon = game.add.weapon(5,'laser');
+  weapon = game.add.weapon(10,'laser');
   weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
   weapon.bulletSpeed = 300;
-  weapon.fireRate = 100;
+  weapon.fireRate = 350;
   weapon.trackSprite(ajax);
   weapon.trackOffset.x = 60;
   weapon.trackOffset.y = 24;
@@ -71,6 +82,17 @@ function update() {
 // Moves the x value of Back1 and Back2 backwards every frame
   Back1.x --;
   Back2.x --;
+
+Blocks.forEach(function(block) {
+  block.x--;
+    if (block.x < 0) {
+      console.log("dead block");
+        Blocks.remove(block);
+        spawnBlock();
+    }
+  }
+);
+
 
 //Scrolling background
   if (Back1.x < -game.world.width) {
@@ -94,4 +116,11 @@ function update() {
   }
 
 }
+
+function spawnBlock(){
+  var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
+  var myY = game.rnd.integerInRange(0,game.world.height);
+  var block = Blocks.create(myX, myY, 'Block');
+}
+
 };
