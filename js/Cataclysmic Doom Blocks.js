@@ -27,14 +27,14 @@ function preload() {
   game.load.image('ajaxN', 'assets/AjaxN.png')
   game.load.image('Block', 'assets/Block.png');
   game.load.image('bomb', 'assets/Bomb.png');
-  game.load.image('DBlock', 'assets/DBlock.png');
+  game.load.image('dblock', 'assets/DBlock.png');
   game.load.image('explosion', 'assets/Explosion.png');
   game.load.image('laser', 'assets/Laser.png');
   game.load.image('medKit', 'assets/Med Kit.png');
   game.load.image('missile', 'assets/Missile.png');
   game.load.image('shield', 'assets/Shield.png');
- }
 
+}
 function create() {
   //Adding Background
   Back1 = game.add.sprite(0,0,'background');
@@ -47,20 +47,24 @@ function create() {
 
   //Creating the blocks on the level
   Blocks = game.add.group();
-  DBlock = game.add.group();
+  DBlocks = game.add.group();
 
-  //Use a loop to create all of the blocks
-  for (var i=0; i < 8; i++) {
+  //Use a loop to create all of the normal blocks
+  for (var i=0; i < 4; i++) {
     spawnBlock();
   }
-
+  //Use a loop to create all of the Destructible blocks
+  for (var i=0; i < 8; i++) {
+    spawnBlock2();
+  }
 
   //Text
-  livesText = game.add.text(650,game.world.height-50,'Lives: ' + lives, {fill: 'red'});
-  scoreText = game.add.text(650,game.world.height-75,'Score: ' + score, {fill: 'orange'});
+  livesText = game.add.text(600,game.world.height-50,'Lives: ' + lives, {fill: 'red'});
+  scoreText = game.add.text(600,game.world.height-75,'Score: ' + score, {fill: 'orange'});
 
   //Weapon Setup
   weapon = game.add.weapon(10,'laser');
+  weapon.enableBody = true;
   weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
   weapon.bulletSpeed = 300;
   weapon.fireRate = 350;
@@ -76,23 +80,36 @@ function create() {
     'up2':Phaser.KeyCode.UPARROW,
     'shoot':Phaser.KeyCode.SPACEBAR
   })
+
 }
 
 function update() {
 // Moves the x value of Back1 and Back2 backwards every frame
   Back1.x --;
   Back2.x --;
+  score++;
+  scoreText.text = "Score: " + score;
 
+//Removal of the normal blocks
 Blocks.forEach(function(block) {
   block.x--;
     if (block.x < 0) {
-      console.log("dead block");
         Blocks.remove(block);
         spawnBlock();
     }
   }
 );
 
+//Removal of the Destructible blocks
+
+DBlocks.forEach(function(dblock) {
+  dblock.x--;
+    if (dblock.x < 0) {
+        DBlocks.remove(dblock);
+        spawnBlock2();
+    }
+  }
+);
 
 //Scrolling background
   if (Back1.x < -game.world.width) {
@@ -122,5 +139,12 @@ function spawnBlock(){
   var myY = game.rnd.integerInRange(0,game.world.height);
   var block = Blocks.create(myX, myY, 'Block');
 }
+
+function spawnBlock2(){
+  var myX2 = game.rnd.integerInRange(game.world.width/2,game.world.width);
+  var myY2 = game.rnd.integerInRange(0,game.world.height);
+  var dblock = DBlocks.create(myX2, myY2, 'dblock');
+}
+
 
 };
