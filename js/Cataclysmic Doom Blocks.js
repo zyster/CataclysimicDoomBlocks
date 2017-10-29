@@ -48,6 +48,8 @@ function create() {
   //Creating the blocks on the level
   Blocks = game.add.group();
   DBlocks = game.add.group();
+  Blocks.enableBody = true;
+  DBlocks.enableBody = true;
 
   //Use a loop to create all of the normal blocks
   for (var i=0; i < 4; i++) {
@@ -111,6 +113,12 @@ DBlocks.forEach(function(dblock) {
   }
 );
 
+//Collisions
+game.physics.arcade.collide(weapon.bullets, DBlocks, destroyDBlock );
+game.physics.arcade.collide(DBlocks, ajax, killPlayer);
+game.physics.arcade.collide(Blocks, ajax, killPlayer);
+
+
 //Scrolling background
   if (Back1.x < -game.world.width) {
     Back1.x = game.world.width;
@@ -132,6 +140,8 @@ DBlocks.forEach(function(dblock) {
     weapon.fire();
   }
 
+
+
 }
 
 function spawnBlock(){
@@ -146,5 +156,20 @@ function spawnBlock2(){
   var dblock = DBlocks.create(myX2, myY2, 'dblock');
 }
 
+function destroyDBlock(laser, dblock) {
+
+  laser.kill();
+  dblock.kill();
+  DBlocks.remove(dblock);
+  spawnBlock2();
+}
+
+  function killPlayer(ajax, dblock){
+    ajax.kill();
+  }
+
+  function killPlayer(ajax, Block) {
+    ajax.kill();
+  }
 
 };
