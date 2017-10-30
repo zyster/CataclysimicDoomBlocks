@@ -33,6 +33,7 @@ function preload() {
   game.load.image('medKit', 'assets/Med Kit.png');
   game.load.image('missile', 'assets/Missile.png');
   game.load.image('shield', 'assets/Shield.png');
+  game.load.image('gameover', 'assets/Gameover.png');
 
 }
 function create() {
@@ -113,7 +114,7 @@ DBlocks.forEach(function(dblock) {
   }
 );
 
-//Collisions
+// Setting up Collisions
 game.physics.arcade.collide(weapon.bullets, DBlocks, destroyDBlock );
 game.physics.arcade.collide(DBlocks, ajax, killPlayer);
 game.physics.arcade.collide(Blocks, ajax, killPlayer);
@@ -164,12 +165,9 @@ function destroyDBlock(laser, dblock) {
   spawnBlock2();
 }
 
-  function killPlayer(ajax, dblock){
-    ajax.kill();
-  }
-
   function killPlayer(ajax, Block) {
     ajax.kill();
+    game.add.sprite(100, 150, 'gameover');
   }
 
 };
