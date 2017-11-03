@@ -21,6 +21,8 @@ var Back1;
 var Back2;
 var Blocks;
 
+var gameState = 1; //1 = playing, 0 = dead
+
 function preload() {
   game.load.image('background', 'assets/Background.png');
   game.load.image('ajax', 'assets/Ajax.png');
@@ -33,6 +35,7 @@ function preload() {
   game.load.image('medKit', 'assets/Med Kit.png');
   game.load.image('missile', 'assets/Missile.png');
   game.load.image('shield', 'assets/Shield.png');
+  game.load.image('gameover', 'assets/Gameover.png');
 
 }
 function create() {
@@ -48,12 +51,14 @@ function create() {
   //Creating the blocks on the level
   Blocks = game.add.group();
   DBlocks = game.add.group();
+  Blocks.enableBody = true;
+  DBlocks.enableBody = true;
 
-  //Use a loop to create all of the blocks
+  //Use a loop to create all of the normal blocks
   for (var i=0; i < 4; i++) {
     spawnBlock();
   }
-
+  //Use a loop to create all of the Destructible blocks
   for (var i=0; i < 8; i++) {
     spawnBlock2();
   }
@@ -64,6 +69,7 @@ function create() {
 
   //Weapon Setup
   weapon = game.add.weapon(10,'laser');
+  weapon.enableBody = true;
   weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
   weapon.bulletSpeed = 300;
   weapon.fireRate = 350;
@@ -79,9 +85,11 @@ function create() {
     'up2':Phaser.KeyCode.UPARROW,
     'shoot':Phaser.KeyCode.SPACEBAR
   })
+
 }
 
 function update() {
+if(gameState == 1){
 // Moves the x value of Back1 and Back2 backwards every frame
   Back1.x --;
   Back2.x --;
@@ -109,6 +117,12 @@ DBlocks.forEach(function(dblock) {
   }
 );
 
+// Setting up Collisions
+game.physics.arcade.collide(weapon.bullets, DBlocks, destroyDBlock );
+game.physics.arcade.collide(DBlocks, ajax, killPlayer);
+game.physics.arcade.collide(Blocks, ajax, killPlayer);
+
+
 //Scrolling background
   if (Back1.x < -game.world.width) {
     Back1.x = game.world.width;
@@ -129,6 +143,8 @@ DBlocks.forEach(function(dblock) {
   if (moveKeys.shoot.isDown) {
     weapon.fire();
   }
+}
+
 
 }
 
@@ -143,4 +159,20 @@ function spawnBlock2(){
   var myY2 = game.rnd.integerInRange(0,game.world.height);
   var dblock = DBlocks.create(myX2, myY2, 'dblock');
 }
+
+function destroyDBlock(laser, dblock) {
+
+  laser.kill();
+  dblock.kill();
+  DBlocks.remove(dblock);
+  spawnBlock2();
+}
+
+  function killPlayer(ajax, Block) {
+    ajax.kill();
+    gameState = 0;
+    game.add.sprite(100, 150, 'gameover');
+
+  }
+
 };
