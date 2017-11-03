@@ -21,6 +21,8 @@ var Back1;
 var Back2;
 var Blocks;
 
+var gameState = 1; //1 = playing, 0 = dead
+
 function preload() {
   game.load.image('background', 'assets/Background.png');
   game.load.image('ajax', 'assets/Ajax.png');
@@ -87,6 +89,7 @@ function create() {
 }
 
 function update() {
+if(gameState == 1){
 // Moves the x value of Back1 and Back2 backwards every frame
   Back1.x --;
   Back2.x --;
@@ -140,7 +143,7 @@ game.physics.arcade.collide(Blocks, ajax, killPlayer);
   if (moveKeys.shoot.isDown) {
     weapon.fire();
   }
-
+}
 
 
 }
@@ -167,7 +170,9 @@ function destroyDBlock(laser, dblock) {
 
   function killPlayer(ajax, Block) {
     ajax.kill();
+    gameState = 0;
     game.add.sprite(100, 150, 'gameover');
+
   }
 
 };
