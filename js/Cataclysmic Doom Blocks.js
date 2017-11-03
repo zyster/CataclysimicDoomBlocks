@@ -1,4 +1,4 @@
-window.onload = function() {
+  window.onload = function() {
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 
@@ -36,6 +36,7 @@ function preload() {
   game.load.image('missile', 'assets/Missile.png');
   game.load.image('shield', 'assets/Shield.png');
   game.load.image('gameover', 'assets/Gameover.png');
+  game.load.image('button', 'assets/Button.png');
 
 }
 function create() {
@@ -86,7 +87,14 @@ function create() {
     'shoot':Phaser.KeyCode.SPACEBAR
   })
 
-}
+ //Button
+ button = game.add.button(game.world.centerX, game.world.centerY, 'button');
+ button.anchor.setTo(0.5,0.5);
+ button.onInputUp.add(actionUp);
+ //Button text
+ text = game.add.text(button.x,button.y, 'PLAY');
+ text.anchor.setTo(0.5,0.5);
+ }
 
 function update() {
 if(gameState == 1){
@@ -172,7 +180,9 @@ function destroyDBlock(laser, dblock) {
     ajax.kill();
     gameState = 0;
     game.add.sprite(100, 150, 'gameover');
-
   }
 
+  function actionUp(){
+
+  }
 };
