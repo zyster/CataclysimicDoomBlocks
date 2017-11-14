@@ -36,6 +36,7 @@ function preload() {
   game.load.image('missile', 'assets/Missile.png');
   game.load.image('shield', 'assets/Shield.png');
   game.load.image('gameover', 'assets/Gameover.png');
+  game.load.image('Restart', 'assets/Restart.png');
 
 }
 function create() {
@@ -83,7 +84,8 @@ function create() {
   {
     'up': Phaser.KeyCode.W,
     'up2':Phaser.KeyCode.UPARROW,
-    'shoot':Phaser.KeyCode.SPACEBAR
+    'shoot':Phaser.KeyCode.SPACEBAR,
+    'restart':Phaser.KeyCode.R
   })
 
 }
@@ -145,6 +147,10 @@ game.physics.arcade.collide(Blocks, ajax, killPlayer);
   }
 }
 
+if (gameState == 0 && moveKeys.restart.isDown) {
+  location.reload();
+}
+
 
 }
 
@@ -172,7 +178,11 @@ function destroyDBlock(laser, dblock) {
     ajax.kill();
     gameState = 0;
     game.add.sprite(100, 150, 'gameover');
+    game.add.sprite(235, 450, 'Restart');
+    if (moveKeys.restart.isDown) {
 
-  }
+    }
 
-};
+}
+
+}
