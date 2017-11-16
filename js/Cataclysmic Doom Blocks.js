@@ -20,6 +20,7 @@ var weapon;
 var Back1;
 var Back2;
 var Blocks;
+var powerup;
 
 var gameState = 1; //1 = playing, 0 = dead
 
@@ -52,6 +53,7 @@ function create() {
   //Creating the blocks on the level
   Blocks = game.add.group();
   DBlocks = game.add.group();
+  powerup = game.add.group();
   Blocks.enableBody = true;
   DBlocks.enableBody = true;
 
@@ -62,6 +64,10 @@ function create() {
   //Use a loop to create all of the Destructible blocks
   for (var i=0; i < 8; i++) {
     spawnBlock2();
+  }
+
+  for (var b=0; b < 1; b++) {
+    spawnPowerup();
   }
 
   //Text
@@ -119,6 +125,15 @@ DBlocks.forEach(function(dblock) {
   }
 );
 
+powerup.forEach(function(scrolling) {
+  scrolling.x--;
+  if (scrolling.x < 0) {
+      powerup.remove(scrolling);
+      spawnPowerup();
+  }
+}
+);
+
 // Setting up Collisions
 game.physics.arcade.collide(weapon.bullets, DBlocks, destroyDBlock );
 game.physics.arcade.collide(DBlocks, ajax, killPlayer);
@@ -147,13 +162,14 @@ game.physics.arcade.collide(Blocks, ajax, killPlayer);
   }
 }
 
+//Calling the restart button function
 if (gameState == 0 && moveKeys.restart.isDown) {
   location.reload();
 }
 
-
+//End of update
 }
-
+//The spawn block function
 function spawnBlock(){
   var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
   var myY = game.rnd.integerInRange(0,game.world.height);
@@ -184,5 +200,26 @@ function destroyDBlock(laser, dblock) {
     }
 
 }
+
+  function spawnPowerup () {
+    var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
+    var myY = game.rnd.integerInRange(0,game.world.height);
+    var value = game.rnd.integerInRange(1, 3);
+    switch (value){
+      case 1:
+      pup = powerup.create(myX, myY,'medKit');
+      break ;
+      case 2:
+      pup = powerup.create(myX, myY,'shield');
+      break ;
+      case 3:
+      pup = powerup.create(myX, myY,'bomb');
+      break ;
+  }
+
+  }
+
+
+
 
 }
