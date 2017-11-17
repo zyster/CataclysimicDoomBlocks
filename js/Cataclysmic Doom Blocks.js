@@ -21,7 +21,7 @@ var Back1;
 var Back2;
 var Blocks;
 var powerup;
-
+var difficulty = 1;
 var gameState = 1; //1 = playing, 0 = dead
 
 function preload() {
@@ -56,13 +56,14 @@ function create() {
   powerup = game.add.group();
   Blocks.enableBody = true;
   DBlocks.enableBody = true;
+  powerup.enableBody = true;
 
   //Use a loop to create all of the normal blocks
-  for (var i=0; i < 4; i++) {
+  for (var i=0; i < 2; i++) {
     spawnBlock();
   }
   //Use a loop to create all of the Destructible blocks
-  for (var i=0; i < 8; i++) {
+  for (var i=0; i < 6; i++) {
     spawnBlock2();
   }
 
@@ -103,6 +104,10 @@ if(gameState == 1){
   Back2.x --;
   score++;
   scoreText.text = "Score: " + score;
+  //INcreasing the score every 1500 frames
+  if(score % 1500 == 0) {
+    difficulty++;
+  }
 
 //Removal of the normal blocks
 Blocks.forEach(function(block) {
@@ -138,6 +143,7 @@ powerup.forEach(function(scrolling) {
 game.physics.arcade.collide(weapon.bullets, DBlocks, destroyDBlock );
 game.physics.arcade.collide(DBlocks, ajax, killPlayer);
 game.physics.arcade.collide(Blocks, ajax, killPlayer);
+game.physics.arcade.collide(powerup, ajax, doMedKit);
 
 
 //Scrolling background
@@ -171,15 +177,27 @@ if (gameState == 0 && moveKeys.restart.isDown) {
 }
 //The spawn block function
 function spawnBlock(){
+  for(i=0;i<difficulty;i++){
   var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
   var myY = game.rnd.integerInRange(0,game.world.height);
   var block = Blocks.create(myX, myY, 'Block');
+  var stopChance = game.rnd.integerInRange(0,3);
+  if(stopChance > 0){
+    return;
+  }
+  }
 }
 
 function spawnBlock2(){
+  for(i=0;i<difficulty;i++){
   var myX2 = game.rnd.integerInRange(game.world.width/2,game.world.width);
   var myY2 = game.rnd.integerInRange(0,game.world.height);
   var dblock = DBlocks.create(myX2, myY2, 'dblock');
+  var stopChance = game.rnd.integerInRange(0,3);
+  if(stopChance > 0){
+    return;
+  }
+  }
 }
 
 function destroyDBlock(laser, dblock) {
@@ -191,6 +209,12 @@ function destroyDBlock(laser, dblock) {
 }
 
   function killPlayer(ajax, Block) {
+    lives--;
+    Block.kill();
+    Blocks.remove(Block);
+    DBlocks.remove(Block);
+    livesText.text = "Lives: " + lives;
+    if(lives <= 0){
     ajax.kill();
     gameState = 0;
     game.add.sprite(100, 150, 'gameover');
@@ -198,28 +222,32 @@ function destroyDBlock(laser, dblock) {
     if (moveKeys.restart.isDown) {
 
     }
-
+}
 }
 
   function spawnPowerup () {
     var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
     var myY = game.rnd.integerInRange(0,game.world.height);
     var value = game.rnd.integerInRange(1, 3);
-    switch (value){
-      case 1:
+    //switch (value){
+    //  case 1:
       pup = powerup.create(myX, myY,'medKit');
-      break ;
-      case 2:
-      pup = powerup.create(myX, myY,'shield');
-      break ;
-      case 3:
-      pup = powerup.create(myX, myY,'bomb');
-      break ;
+    //  break ;
+    //  case 2:
+    //  pup = powerup.create(myX, myY,'shield');
+    //  break ;
+    //  case 3:
+  //    pup = powerup.create(myX, myY,'bomb');
+  //    break ;
   }
 
+  function doMedKit(ajax, pup){
+    console.log('here');
+    lives++;
+    livesText.text = "Lives: " + lives;
+    pup.kill();
+    powerup.remove(pup);
+    spawnPowerup();
   }
-
-
-
 
 }
