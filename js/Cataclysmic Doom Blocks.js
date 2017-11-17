@@ -2,7 +2,7 @@ window.onload = function() {
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 
-//Global Variables
+// Sets up all of the Global Variables
 var ajax;
 var Block;
 var Bomb;
@@ -25,27 +25,23 @@ var difficulty = 1;
 var gameState = 1; //1 = playing, 0 = dead
 
 function preload() {
+  //Preloads all of the assets for later use in the game
   game.load.image('background', 'assets/Background.png');
   game.load.image('ajax', 'assets/Ajax.png');
-  game.load.image('ajaxN', 'assets/AjaxN.png')
   game.load.image('Block', 'assets/Block.png');
-  game.load.image('bomb', 'assets/Bomb.png');
   game.load.image('dblock', 'assets/DBlock.png');
-  game.load.image('explosion', 'assets/Explosion.png');
   game.load.image('laser', 'assets/Laser.png');
   game.load.image('medKit', 'assets/Med Kit.png');
-  game.load.image('missile', 'assets/Missile.png');
-  game.load.image('shield', 'assets/Shield.png');
   game.load.image('gameover', 'assets/Gameover.png');
   game.load.image('Restart', 'assets/Restart.png');
 
 }
 function create() {
-  //Adding Background
+  //Adding the Background
   Back1 = game.add.sprite(0,0,'background');
   Back2 = game.add.sprite(game.world.width,0,'background');
 
-  //Creating the player
+  //Creating & setting up the player
   ajax = game.add.sprite(64, 64, 'ajax');
   game.physics.arcade.enable(ajax);
   ajax.body.collideWorldBounds = true;
@@ -66,16 +62,16 @@ function create() {
   for (var i=0; i < 6; i++) {
     spawnBlock2();
   }
-
+  //Use a loop to create the powerups
   for (var b=0; b < 1; b++) {
     spawnPowerup();
   }
 
-  //Text
+  //Lives and score text setup
   livesText = game.add.text(600,game.world.height-50,'Lives: ' + lives, {fill: 'red'});
   scoreText = game.add.text(600,game.world.height-75,'Score: ' + score, {fill: 'orange'});
 
-  //Weapon Setup
+  //Weapon Creation and Setup
   weapon = game.add.weapon(10,'laser');
   weapon.enableBody = true;
   weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
@@ -86,7 +82,7 @@ function create() {
   weapon.trackOffset.y = 24;
   weapon.fireAngle = Phaser.ANGLE_RIGHT;
 
-  //Creating controls
+  //Creating the controls
   moveKeys = game.input.keyboard.addKeys(
   {
     'up': Phaser.KeyCode.W,
@@ -99,17 +95,21 @@ function create() {
 
 function update() {
 if(gameState == 1){
-// Moves the x value of Back1 and Back2 backwards every frame
+// Moves the x value of Back1 and Back2 backwards every frame for the scrolling background
   Back1.x --;
   Back2.x --;
+
+//Increases and redisplays the score every frame
   score++;
   scoreText.text = "Score: " + score;
-  //INcreasing the score every 1500 frames
+
+
+  //Increasing the difficulty every 1500 frames
   if(score % 1500 == 0) {
     difficulty++;
   }
 
-//Removal of the normal blocks
+//Removal of the normal blocks after they scroll of the game
 Blocks.forEach(function(block) {
   block.x--;
     if (block.x < 0) {
@@ -119,7 +119,7 @@ Blocks.forEach(function(block) {
   }
 );
 
-//Removal of the Destructible blocks
+//Removal of the Destructible blocks after they scroll of the game
 
 DBlocks.forEach(function(dblock) {
   dblock.x--;
@@ -129,6 +129,8 @@ DBlocks.forEach(function(dblock) {
     }
   }
 );
+
+//Sets up a forEach to scroll the powerup at the same pace as the blocks
 
 powerup.forEach(function(scrolling) {
   scrolling.x--;
@@ -175,6 +177,7 @@ if (gameState == 0 && moveKeys.restart.isDown) {
 
 //End of update
 }
+
 //The spawn block function
 function spawnBlock(){
   for(i=0;i<difficulty;i++){
@@ -188,6 +191,7 @@ function spawnBlock(){
   }
 }
 
+//The spawn Dblock function
 function spawnBlock2(){
   for(i=0;i<difficulty;i++){
   var myX2 = game.rnd.integerInRange(game.world.width/2,game.world.width);
@@ -200,6 +204,7 @@ function spawnBlock2(){
   }
 }
 
+//Destroying the DBlock on collision with laser
 function destroyDBlock(laser, dblock) {
 
   laser.kill();
@@ -208,6 +213,7 @@ function destroyDBlock(laser, dblock) {
   spawnBlock2();
 }
 
+//Kills the player when lives are 0, -- a life on collision
   function killPlayer(ajax, Block) {
     lives--;
     Block.kill();
@@ -225,22 +231,18 @@ function destroyDBlock(laser, dblock) {
 }
 }
 
+//Spawns the powerups
   function spawnPowerup () {
     var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
     var myY = game.rnd.integerInRange(0,game.world.height);
     var value = game.rnd.integerInRange(1, 3);
-    //switch (value){
-    //  case 1:
-      pup = powerup.create(myX, myY,'medKit');
-    //  break ;
-    //  case 2:
-    //  pup = powerup.create(myX, myY,'shield');
-    //  break ;
-    //  case 3:
-  //    pup = powerup.create(myX, myY,'bomb');
-  //    break ;
+
+    pup = powerup.create(myX, myY,'medKit');
+
   }
 
+
+//On collision with the med kit add a life, and remove the medKit
   function doMedKit(ajax, pup){
     console.log('here');
     lives++;
