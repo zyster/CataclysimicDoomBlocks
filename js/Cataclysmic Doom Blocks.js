@@ -181,7 +181,7 @@ function spawnBlock(){
   var myX = game.rnd.integerInRange(game.world.width/2,game.world.width);
   var myY = game.rnd.integerInRange(0,game.world.height);
   var block = Blocks.create(myX, myY, 'Block');
-  var stopChance = game.rnd.integerInRange(0,3);
+  var stopChance = game.rnd.integerInRange(0,5);
   if(stopChance > 0){
     return;
   }
@@ -193,7 +193,7 @@ function spawnBlock2(){
   var myX2 = game.rnd.integerInRange(game.world.width/2,game.world.width);
   var myY2 = game.rnd.integerInRange(0,game.world.height);
   var dblock = DBlocks.create(myX2, myY2, 'dblock');
-  var stopChance = game.rnd.integerInRange(0,3);
+  var stopChance = game.rnd.integerInRange(0,5);
   if(stopChance > 0){
     return;
   }
